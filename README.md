@@ -1,85 +1,62 @@
-# COMPILADOR PASKENZIE 
+# Compilador PasKenzie
 
-Turma 06N
-- Matheus Chediac Rodrigues (10417490)
-- Lucas Monteiro Soares (10417881)
+Matheus Chediac Rodrigues (10417490)  
+Lucas Monteiro Soares (10417881)
 
-Este projeto implementa a segunda fase do compilador para a linguagem PasKenzie, adicionando:
+## Sobre o Projeto
 
-1. ANÁLISE SEMÂNTICA
-   - Verificação de declaração única de variáveis
-   - Verificação de uso de variáveis declaradas
-   - Implementação de tabela de símbolos usando Hash Table
+Compilador desenvolvido para a disciplina de COMPILADORES (Universidade Presbiteriana Mackenzie), para a linguagem PasKenzie que realiza análise léxica, sintática, semântica e geração de código intermediário MEPA.
 
-2. GERAÇÃO DE CÓDIGO INTERMEDIÁRIO
-   - Geração de código MEPA para todas as construções da linguagem
-   - Comandos: atribuição, leitura, escrita, condicional, repetição
-   - Expressões aritméticas e relacionais
+## Funcionalidades
 
-===============================================================================
-IMPLEMENTAÇÃO
-===============================================================================
+### Análise Léxica e Sintática
+- Reconhecimento de tokens (identificadores, palavras reservadas, operadores, constantes)
+- Validação da estrutura do programa conforme a gramática da linguagem
+- Tratamento de comentários no formato `(* ... *)`
 
-TABELA DE SÍMBOLOS:
-- Implementada como Hash Table com 211 entradas (número primo)
-- Cada entrada é uma lista encadeada para tratar colisões
-- Usa a função hashMack() fornecida (hashMack.o ou hashMack.obj)
-- Armazena: identificador da variável e seu endereço na memória
+### Análise Semântica
+- **Tabela de símbolos** implementada como Hash Table (211 entradas)
+- Verificação de declaração única de variáveis
+- Verificação de uso de variáveis não declaradas
+- Mensagens de erro com número da linha
 
-ANÁLISE SEMÂNTICA:
-- Verifica declaração única na seção VAR
-- Verifica se variáveis usadas foram declaradas
-- Emite erros semânticos informativos com número da linha
+### Geração de Código MEPA
+Geração de código intermediário para:
+- Expressões aritméticas (`+`, `-`, `*`, `div`)
+- Expressões relacionais (`=`, `<>`, `<`, `<=`, `>`, `>=`)
+- Comandos: atribuição, `read`, `write`, `if-then-else`, `while-do`
+- Blocos `begin-end`
 
-GERAÇÃO DE CÓDIGO:
-- Código MEPA gerado durante a análise sintática
-- Instruções implementadas: INPP, AMEM, LEIT, ARMZ, CRVL, CRCT, SOMA, 
-  SUBT, MULT, DIVI, CMIG, CMDG, CMME, CMEG, CMMA, CMAG, DSVF, DSVS, 
-  NADA, IMPR, PARA
-- Rótulos gerados automaticamente (L1, L2, ...)
+## Compilação e Uso
 
-===============================================================================
-COMPILAÇÃO E EXECUÇÃO
-===============================================================================
-
+```bash
+# Linux
 gcc -g -Og -Wall compilador.c hashMack.o -o compilador
 
-./compilador <arquivo.pas>
+# Windows
+gcc -g -Og -Wall compilador.c hashMack.obj -o compilador.exe
+```
 
-===============================================================================
-ESTRUTURAS DE DADOS PRINCIPAIS
-===============================================================================
+**Executar:**
+```bash
+./compilador programa.pas
+```
 
-1. TInfoAtomo: Armazena informações do token atual
-2. TTabelaSimbolos: Hash table com 211 entradas
-3. TNo: Nó da lista encadeada para cada entrada da hash table
+## Estrutura do Código
 
-===============================================================================
-FUNCIONALIDADES IMPLEMENTADAS
-===============================================================================
+- `compilador.c` - Código principal do compilador
+- `hashMack.o` / `hashMack.obj` - Função hash para a tabela de símbolos
+- `testa_hashMack.c` - Programa auxiliar para testar a função hash
 
-Análise léxica (mantida da Fase 1)
-Análise sintática (mantida da Fase 1)
-Análise semântica:
-  Verificação de declaração única
-  Verificação de variáveis não declaradas
-  Tabela de símbolos com Hash Table
-Geração de código intermediário:
-  Expressões aritméticas (+, -, *, div)
-  Expressões relacionais (=, <>, <, <=, >, >=)
-  Comando de atribuição
-  Comando de leitura (read)
-  Comando de escrita (write)
-  Comando condicional (if-then-else)
-  Comando de repetição (while-do)
-  Blocos begin-end
+## Exemplo de Saída
 
-===============================================================================
-OBSERVAÇÕES
-===============================================================================
+O compilador gera:
+1. Código MEPA na saída padrão
+2. Tabela de símbolos ao final da execução
+3. Mensagens de erro (se houver) indicando tipo e linha
 
-- O compilador trata apenas variáveis do tipo INTEGER
-- Não há distinção entre expressões inteiras e lógicas (conforme especificação)
-- Todos os erros (léxicos, sintáticos e semânticos) são reportados
-- O programa finaliza na primeira ocorrência de erro
-- A memória da tabela de símbolos é liberada ao final da execução
+## Limitações
+
+- Suporta apenas variáveis do tipo INTEGER, CHAR e BOOLEAN (sem distinção na geração de código)
+- Programa encerra na primeira ocorrência de erro
+- Identificadores limitados a 15 caracteres
